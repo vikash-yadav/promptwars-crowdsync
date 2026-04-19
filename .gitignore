@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+.npm
+dist/
+.next/
+out/
+build/
+
+# Secrets
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.env
+
+# OS
+.DS_Store
+Thumbs.db
