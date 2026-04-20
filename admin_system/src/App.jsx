@@ -7,11 +7,8 @@ import AgentRoster from './components/AgentRoster';
 import SecurityLogs from './components/SecurityLogs';
 import AlertsPanel from './components/AlertsPanel';
 
-// Connect to API Gateway (Using IP and explicit transport for reliability)
-const socket = io('http://127.0.0.1:4000', {
-  transports: ['websocket'],
-  reconnection: true
-});
+// Connect to API Gateway (Production)
+const socket = io('https://api-gateway-260084222656.us-central1.run.app');
 
 function App() {
   const [activeTab, setActiveTab] = useState('overview');
@@ -77,7 +74,7 @@ function App() {
           <div>
             <h2 style={{ marginBottom: '8px' }}>Synchronizing with API Gateway...</h2>
             <p style={{ color: 'var(--text-secondary)' }}>
-              {status === 'error' ? 'Connection failed. Ensure API Gateway is running on port 4000.' : 'Awaiting live telemetry stream...'}
+              {status === 'error' ? 'Connection failed. Ensure the Cloud Run API Gateway is active and reachable.' : 'Awaiting live telemetry stream...'}
             </p>
           </div>
         </div>

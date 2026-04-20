@@ -1,15 +1,18 @@
 export default function Home() {
   return (
-    <main className="min-h-screen bg-[#050505] flex flex-col items-center justify-center p-8 relative overflow-hidden">
+    <main 
+      className="min-h-screen bg-[#050505] flex flex-col items-center justify-center p-8 relative overflow-hidden"
+      style={{ backgroundColor: '#050505', color: 'white' }}
+    >
       {/* Background Glows */}
       <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-600/20 rounded-full blur-[120px]"></div>
       <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-indigo-600/20 rounded-full blur-[120px]"></div>
 
       <div className="z-10 text-center mb-12">
-        <h1 className="text-white text-5xl font-extrabold tracking-tight mb-4 bg-clip-text text-transparent bg-gradient-to-b from-white to-white/50">
+        <h1 className="text-white text-5xl font-extrabold tracking-tight mb-4">
           CrowdSync <span className="text-blue-500">Attendee</span>
         </h1>
-        <p className="text-white/60 text-lg max-w-xl">
+        <p className="text-white/80 text-lg max-w-xl">
           Your AI-powered stadium companion. Beat the lines, find your seat, and never miss a moment of the game.
         </p>
       </div>
