@@ -1,5 +1,5 @@
-fastapi==0.103.2
-uvicorn==0.23.2
-google-cloud-aiplatform==1.35.0
-pydantic==2.4.2
-python-dotenv==1.0.0
+fastapi>=0.110.0
+uvicorn[standard]>=0.29.0
+google-cloud-aiplatform>=1.49.0
+pydantic>=2.6.0
+python-dotenv>=1.0.0
