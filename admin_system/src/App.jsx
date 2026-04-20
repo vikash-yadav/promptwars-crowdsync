@@ -6,6 +6,8 @@ import PredictiveStadiumMap from './components/PredictiveStadiumMap';
 import AgentRoster from './components/AgentRoster';
 import SecurityLogs from './components/SecurityLogs';
 import AlertsPanel from './components/AlertsPanel';
+import { generateMockStadiumData } from './MockDataGenerator';
+import './App.css';
 
 // Connect to API Gateway (Production)
 const socket = io('https://api-gateway-260084222656.us-central1.run.app');
@@ -22,6 +24,10 @@ function App() {
   });
 
   useEffect(() => {
+    // Populate with mock data initially so the UI isn't empty
+    const mockData = generateMockStadiumData();
+    setData(mockData);
+
     socket.on('connect', () => {
       console.log('Connected to API Gateway WebSocket');
       setStatus('connected');
@@ -46,49 +52,43 @@ function App() {
 
   return (
     <DashboardLayout 
-      totalAttendees={data.totalAttendees} 
       activeTab={activeTab} 
       onTabChange={setActiveTab}
+      totalAttendees={data.totalAttendees}
+      status={status}
     >
-      <div style={{ position: 'fixed', top: '80px', right: '20px', zIndex: 100, fontSize: '12px' }}>
-        <span style={{ 
-          padding: '4px 8px', borderRadius: '4px', 
-          background: status === 'connected' ? 'var(--accent-green)' : 'var(--accent-red)',
-          color: 'white'
-        }}>
-          Gateway: {status.toUpperCase()}
-        </span>
-      </div>
-
-      {/* Center column: Main Content based on Tab */}
-      {status === 'connected' && data.sectors.length > 0 ? (
-        <>
-          {activeTab === 'overview' && <StadiumHeatmap sectors={data.sectors} />}
-          {activeTab === 'map' && <PredictiveStadiumMap sectors={data.sectors} />}
-          {activeTab === 'agents' && <AgentRoster agents={data.agents} />}
-          {activeTab === 'security' && <SecurityLogs logs={data.securityLogs} />}
-        </>
-      ) : (
-        <div className="glass-panel" style={{ padding: '60px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px' }}>
-          <div className="animate-pulse-soft" style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'var(--accent-blue)' }}></div>
-          <div>
-            <h2 style={{ marginBottom: '8px' }}>Synchronizing with API Gateway...</h2>
-            <p style={{ color: 'var(--text-secondary)' }}>
-              {status === 'error' ? 'Connection failed. Ensure the Cloud Run API Gateway is active and reachable.' : 'Awaiting live telemetry stream...'}
-            </p>
+      <div className="animate-slide-up">
+        {activeTab === 'overview' && <StadiumHeatmap sectors={data.sectors} />}
+        {activeTab === 'map' && <PredictiveStadiumMap sectors={data.sectors} />}
+        {activeTab === 'agents' && <AgentRoster agents={data.agents} />}
+        {activeTab === 'security' && <SecurityLogs logs={data.securityLogs} />}
+        
+        {activeTab === 'settings' && (
+          <div className="glass-panel" style={{ padding: '60px', textAlign: 'center', color: 'var(--text-secondary)' }}>
+            <h2 style={{ color: 'var(--text-primary)', marginBottom: '8px' }}>System Configuration</h2>
+            <p>System Settings locked. Multi-factor authentication required for Command Level access.</p>
           </div>
-        </div>
-      )}
-      {activeTab === 'settings' && (
-        <div className="glass-panel" style={{ padding: '40px', textAlign: 'center', color: 'var(--text-secondary)' }}>
-          System Settings locked. Multi-factor authentication required.
-        </div>
-      )}
+        )}
 
-      {/* Right column: Alerts Panel */}
+        {status !== 'connected' && (
+          <div style={{ 
+            marginTop: '20px', 
+            padding: '12px', 
+            background: 'rgba(245, 158, 11, 0.1)', 
+            border: '1px solid rgba(245, 158, 11, 0.2)', 
+            borderRadius: '8px',
+            color: 'var(--accent-yellow)',
+            fontSize: '13px',
+            textAlign: 'center'
+          }}>
+            <strong>Simulated Telemetry:</strong> Currently displaying local cache as the neural link to API Gateway is {status === 'error' ? 'offline' : 'connecting'}...
+          </div>
+        )}
+      </div>
       <AlertsPanel alerts={data.alerts} />
     </DashboardLayout>
   );
 }
 
 export default App;
+

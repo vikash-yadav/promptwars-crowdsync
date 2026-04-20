@@ -1,96 +1,100 @@
 import React from 'react';
-import { LayoutDashboard, Users, Map, Settings, ShieldAlert, Activity } from 'lucide-react';
+import { 
+  LayoutDashboard, 
+  Users, 
+  Map, 
+  Settings, 
+  ShieldAlert, 
+  Activity,
+  Zap,
+  Bell,
+  User
+} from 'lucide-react';
 
 const SidebarItem = ({ icon: Icon, label, active, onClick }) => (
-  <div 
+  <button 
+    className={`nav-item ${active ? 'active' : ''}`}
     onClick={onClick}
-    style={{
-      display: 'flex',
-      alignItems: 'center',
-      gap: '12px',
-      padding: '12px 16px',
-      borderRadius: '12px',
-      cursor: 'pointer',
-      background: active ? 'rgba(59, 130, 246, 0.1)' : 'transparent',
-      color: active ? 'var(--text-primary)' : 'var(--text-secondary)',
-      transition: 'all 0.2s',
-      borderLeft: active ? '3px solid var(--accent-blue)' : '3px solid transparent'
-    }}
-    onMouseOver={(e) => {
-      if (!active) {
-        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
-        e.currentTarget.style.color = 'var(--text-primary)';
-      }
-    }}
-    onMouseOut={(e) => {
-      if (!active) {
-        e.currentTarget.style.background = 'transparent';
-        e.currentTarget.style.color = 'var(--text-secondary)';
-      }
-    }}>
-    <Icon size={20} color={active ? 'var(--accent-blue)' : 'currentColor'} />
-    <span style={{ fontWeight: active ? '600' : '400' }}>{label}</span>
-  </div>
+  >
+    <div className="nav-item-icon">
+      <Icon size={18} />
+    </div>
+    <span>{label}</span>
+  </button>
 );
 
-const DashboardLayout = ({ children, totalAttendees, activeTab, onTabChange }) => {
+const DashboardLayout = ({ children, totalAttendees, activeTab, onTabChange, status }) => {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
+    <div className="dashboard-container">
       {/* Top Navbar */}
-      <header className="glass-header" style={{ height: '72px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 24px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <div style={{ background: 'var(--gradient-brand)', width: '36px', height: '36px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Activity color="white" size={20} />
+      <header className="header-nav glass-header">
+        <div className="logo-group">
+          <div className="logo-icon">
+            <Zap size={20} fill="white" />
           </div>
-          <h1 style={{ fontSize: '22px', margin: 0 }}>CrowdSync</h1>
-          <span style={{ background: 'rgba(255,255,255,0.1)', padding: '4px 8px', borderRadius: '6px', fontSize: '12px', color: 'var(--text-secondary)' }}>
-            Staff Control
-          </span>
+          <h1 className="logo-text">CrowdSync <span className="logo-accent">Admin</span></h1>
         </div>
         
-        <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
-          <div style={{ textAlign: 'right' }}>
-            <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Total Venue Attendance</div>
-            <div style={{ fontSize: '18px', fontWeight: 'bold', color: 'var(--accent-green)' }}>
-              {totalAttendees.toLocaleString()}
-            </div>
+        <div className="nav-actions">
+          <div className={`status-badge ${status}`}>
+            <div className="status-dot"></div>
+            <span>{status === 'connected' ? 'Neural Link Active' : 'Gateway Offline'}</span>
           </div>
-          <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <span style={{ fontSize: '14px', fontWeight: 'bold' }}>JD</span>
+          
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginLeft: '24px' }}>
+            <div style={{ textAlign: 'right', marginRight: '8px' }}>
+              <div style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: '700' }}>Venue Attendance</div>
+              <div style={{ fontSize: '16px', fontWeight: 'bold', color: 'var(--accent-green)' }}>
+                {totalAttendees?.toLocaleString() || '0'}
+              </div>
+            </div>
+            <button className="nav-icon-button" style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer' }}>
+              <Bell size={20} />
+            </button>
+            <div className="user-profile" style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '4px 12px', background: 'rgba(255,255,255,0.05)', borderRadius: '30px', border: '1px solid var(--border-color)' }}>
+              <div style={{ width: '24px', height: '24px', borderRadius: '50%', background: 'var(--gradient-brand)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <User size={14} color="white" />
+              </div>
+              <span style={{ fontSize: '13px', fontWeight: '600' }}>Command</span>
+            </div>
           </div>
         </div>
       </header>
 
-      {/* Main Grid Layout */}
-      <div className="dashboard-grid">
+      <main className="dashboard-main">
         {/* Sidebar */}
-        <nav className="glass-panel" style={{ padding: '20px 12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          <div style={{ fontSize: '12px', textTransform: 'uppercase', color: 'var(--text-secondary)', fontWeight: 'bold', letterSpacing: '1px', marginBottom: '8px', paddingLeft: '16px' }}>
-            Menu
+        <aside className="sidebar">
+          <div>
+            <p className="nav-section-label">Main Menu</p>
+            <div className="nav-items">
+              <SidebarItem 
+                icon={LayoutDashboard} 
+                label="Live Overview" 
+                active={activeTab === 'overview'} 
+                onClick={() => onTabChange('overview')}
+              />
+              <SidebarItem 
+                icon={Map} 
+                label="Predictive Map" 
+                active={activeTab === 'map'} 
+                onClick={() => onTabChange('map')}
+              />
+              <SidebarItem icon={Users} label="Agent Roster" active={activeTab === 'agents'} onClick={() => onTabChange('agents')} />
+              <SidebarItem icon={ShieldAlert} label="Security Logs" active={activeTab === 'security'} onClick={() => onTabChange('security')} />
+            </div>
           </div>
-          <SidebarItem 
-            icon={LayoutDashboard} 
-            label="Live Overview" 
-            active={activeTab === 'overview'} 
-            onClick={() => onTabChange('overview')}
-          />
-          <SidebarItem 
-            icon={Map} 
-            label="Predictive Map" 
-            active={activeTab === 'map'} 
-            onClick={() => onTabChange('map')}
-          />
-          <SidebarItem icon={Users} label="Agent Roster" active={activeTab === 'agents'} onClick={() => onTabChange('agents')} />
-          <SidebarItem icon={ShieldAlert} label="Security Logs" active={activeTab === 'security'} onClick={() => onTabChange('security')} />
           
           <div style={{ marginTop: 'auto' }}>
+            <p className="nav-section-label">System</p>
             <SidebarItem icon={Settings} label="System Settings" active={activeTab === 'settings'} onClick={() => onTabChange('settings')} />
           </div>
-        </nav>
+        </aside>
 
         {/* Dashboard Content */}
-        {children}
-      </div>
+        <section className="content-area">
+          {children}
+        </section>
+      </main>
     </div>
   );
 };

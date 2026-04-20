@@ -96,3 +96,21 @@ class MockDataGenerator {
 }
 
 export const mockData = new MockDataGenerator();
+
+export const generateMockStadiumData = () => {
+  const generator = new MockDataGenerator();
+  return {
+    sectors: generator.sectors,
+    alerts: generator.alerts,
+    agents: [
+      { id: 'agt-01', name: 'Security Bot Alpha', status: 'patrolling', sector: 'sec-north', battery: 85 },
+      { id: 'agt-02', name: 'Crowd Assist 7', status: 'assisting', sector: 'sec-south', battery: 42 },
+      { id: 'agt-03', name: 'Medical Drone 1', status: 'standby', sector: 'sec-east', battery: 100 },
+    ],
+    securityLogs: [
+      { id: 1, event: 'Face Match: Subject 421', location: 'Gate A', severity: 'low', time: '10:45:12' },
+      { id: 2, event: 'Unattended Bag Detected', location: 'Concourse B', severity: 'high', time: '10:50:05' },
+    ],
+    totalAttendees: generator.sectors.reduce((acc, s) => acc + s.current, 0)
+  };
+};
