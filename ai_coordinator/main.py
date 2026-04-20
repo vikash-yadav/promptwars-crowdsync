@@ -7,7 +7,8 @@ from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field, validator
 from dotenv import load_dotenv
-from typing import Dict
+from typing import Dict, Optional, List
+from services.ai_decision import ZoneData, get_zone_decision
 
 load_dotenv()
 
@@ -111,6 +112,42 @@ async def predict_occupancy(data: PredictionRequest):
 async def ask_coordinator(query: QueryRequest):
     answer = await gemini.get_response(query.user_query)
     return {"response": answer}
+
+
+# --- AI Decision Endpoint ---
+class ZoneDecisionRequest(BaseModel):
+    zone: str = Field(..., min_length=1, max_length=100)
+    people_count: int = Field(..., ge=0, le=500000)
+    area_size: float = Field(..., gt=0)
+    inflow_rate: float = Field(..., ge=0)
+    outflow_rate: float = Field(..., ge=0)
+    capacity: int = Field(..., gt=0, le=500000)
+    adjacent_zones: Optional[List[str]] = None
+
+@app.post("/decide", dependencies=[Depends(check_rate_limit)])
+async def decide_zone_action(request: ZoneDecisionRequest):
+    """
+    Accepts real-time zone telemetry and returns an AI-driven crowd management
+    decision including congestion analysis and recommended action.
+    """
+    zone_data = ZoneData(
+        zone=request.zone,
+        people_count=request.people_count,
+        area_size=request.area_size,
+        inflow_rate=request.inflow_rate,
+        outflow_rate=request.outflow_rate,
+        capacity=request.capacity,
+        adjacent_zones=request.adjacent_zones,
+    )
+    decision = await get_zone_decision(zone_data, gemini)
+    return {
+        "zone": decision.zone,
+        "congestion_likely": decision.congestion_likely,
+        "congestion_level": decision.congestion_level,
+        "should_redirect": decision.should_redirect,
+        "suggested_action": decision.suggested_action,
+    }
+
 
 if __name__ == "__main__":
     import uvicorn
