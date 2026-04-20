@@ -1,5 +1,6 @@
 import os
 import time
+import random
 import vertexai
 from vertexai.generative_models import GenerativeModel
 from fastapi import FastAPI, HTTPException, Request, Depends
@@ -9,6 +10,7 @@ from pydantic import BaseModel, Field, validator
 from dotenv import load_dotenv
 from typing import Dict, Optional, List
 from services.ai_decision import ZoneData, get_zone_decision
+from services.simulation_engine import simulation
 
 load_dotenv()
 
@@ -146,6 +148,40 @@ async def decide_zone_action(request: ZoneDecisionRequest):
         "congestion_level": decision.congestion_level,
         "should_redirect": decision.should_redirect,
         "suggested_action": decision.suggested_action,
+    }
+
+
+# --- Real-Time Simulation Endpoint ---
+@app.get("/live-state", dependencies=[Depends(check_rate_limit)])
+def live_state():
+    """
+    Advance the simulation by one tick and return the current zone snapshot.
+    Each call produces slightly different values as the crowd drifts realistically.
+
+    Returns a dict of zones with density, occupancy, flow rates, and status.
+    """
+    simulation.tick()
+    state = simulation.get_state()
+
+    # Flatten to the format the frontend / simple clients expect
+    response = {}
+    for zone_name, data in state.items():
+        density = data["density"]
+        response[zone_name] = {
+            "density": density,
+            "people_count": data["people_count"],
+            "capacity": data["capacity"],
+            "occupancy_ratio": data["occupancy_ratio"],
+            "inflow_rate": data["inflow_rate"],
+            "outflow_rate": data["outflow_rate"],
+            "status": data["status"],
+            "adjacent_zones": data["adjacent_zones"],
+        }
+
+    return {
+        "tick": simulation.tick_count,
+        "timestamp": time.time(),
+        "zones": response,
     }
 
 
