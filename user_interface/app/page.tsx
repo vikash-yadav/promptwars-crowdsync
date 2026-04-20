@@ -1,5 +1,3 @@
-import SyncBotChat from './components/SyncBotChat';
-
 export default function Home() {
   return (
     <main className="min-h-screen bg-[#050505] flex flex-col items-center justify-center p-8 relative overflow-hidden">
@@ -17,7 +15,7 @@ export default function Home() {
       </div>
 
       <div className="z-10 w-full flex justify-center">
-        <SyncBotChat />
+        {/* Chat removed as per request */}
       </div>
 
       <div className="z-10 mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl">

@@ -1,37 +1,39 @@
 import React from 'react';
 import { LayoutDashboard, Users, Map, Settings, ShieldAlert, Activity } from 'lucide-react';
 
-const SidebarItem = ({ icon: Icon, label, active }) => (
-  <div style={{
-    display: 'flex',
-    alignItems: 'center',
-    gap: '12px',
-    padding: '12px 16px',
-    borderRadius: '12px',
-    cursor: 'pointer',
-    background: active ? 'rgba(59, 130, 246, 0.1)' : 'transparent',
-    color: active ? 'var(--text-primary)' : 'var(--text-secondary)',
-    transition: 'all 0.2s',
-    borderLeft: active ? '3px solid var(--accent-blue)' : '3px solid transparent'
-  }}
-  onMouseOver={(e) => {
-    if (!active) {
-      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
-      e.currentTarget.style.color = 'var(--text-primary)';
-    }
-  }}
-  onMouseOut={(e) => {
-    if (!active) {
-      e.currentTarget.style.background = 'transparent';
-      e.currentTarget.style.color = 'var(--text-secondary)';
-    }
-  }}>
+const SidebarItem = ({ icon: Icon, label, active, onClick }) => (
+  <div 
+    onClick={onClick}
+    style={{
+      display: 'flex',
+      alignItems: 'center',
+      gap: '12px',
+      padding: '12px 16px',
+      borderRadius: '12px',
+      cursor: 'pointer',
+      background: active ? 'rgba(59, 130, 246, 0.1)' : 'transparent',
+      color: active ? 'var(--text-primary)' : 'var(--text-secondary)',
+      transition: 'all 0.2s',
+      borderLeft: active ? '3px solid var(--accent-blue)' : '3px solid transparent'
+    }}
+    onMouseOver={(e) => {
+      if (!active) {
+        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
+        e.currentTarget.style.color = 'var(--text-primary)';
+      }
+    }}
+    onMouseOut={(e) => {
+      if (!active) {
+        e.currentTarget.style.background = 'transparent';
+        e.currentTarget.style.color = 'var(--text-secondary)';
+      }
+    }}>
     <Icon size={20} color={active ? 'var(--accent-blue)' : 'currentColor'} />
     <span style={{ fontWeight: active ? '600' : '400' }}>{label}</span>
   </div>
 );
 
-const DashboardLayout = ({ children, totalAttendees }) => {
+const DashboardLayout = ({ children, totalAttendees, activeTab, onTabChange }) => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
       {/* Top Navbar */}
@@ -66,13 +68,23 @@ const DashboardLayout = ({ children, totalAttendees }) => {
           <div style={{ fontSize: '12px', textTransform: 'uppercase', color: 'var(--text-secondary)', fontWeight: 'bold', letterSpacing: '1px', marginBottom: '8px', paddingLeft: '16px' }}>
             Menu
           </div>
-          <SidebarItem icon={LayoutDashboard} label="Live Overview" active={true} />
-          <SidebarItem icon={Map} label="Predictive Map" active={false} />
-          <SidebarItem icon={Users} label="Agent Roster" active={false} />
-          <SidebarItem icon={ShieldAlert} label="Security Logs" active={false} />
+          <SidebarItem 
+            icon={LayoutDashboard} 
+            label="Live Overview" 
+            active={activeTab === 'overview'} 
+            onClick={() => onTabChange('overview')}
+          />
+          <SidebarItem 
+            icon={Map} 
+            label="Predictive Map" 
+            active={activeTab === 'map'} 
+            onClick={() => onTabChange('map')}
+          />
+          <SidebarItem icon={Users} label="Agent Roster" active={activeTab === 'agents'} onClick={() => onTabChange('agents')} />
+          <SidebarItem icon={ShieldAlert} label="Security Logs" active={activeTab === 'security'} onClick={() => onTabChange('security')} />
           
           <div style={{ marginTop: 'auto' }}>
-            <SidebarItem icon={Settings} label="System Settings" active={false} />
+            <SidebarItem icon={Settings} label="System Settings" active={activeTab === 'settings'} onClick={() => onTabChange('settings')} />
           </div>
         </nav>
 
