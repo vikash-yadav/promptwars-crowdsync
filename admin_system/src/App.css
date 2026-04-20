@@ -40,6 +40,12 @@
   box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .logo-text {
   font-size: 22px;
   margin: 0;
