@@ -2,30 +2,63 @@
 
 A multi-agent AI system that predicts, manages, and optimizes crowd flow inside large stadiums in real time.
 
-## 📱 Download the Attendee App
+## 🧠 Problem Statement
+In fast-paced environments (events, hackathons, public platforms), collecting and making sense of crowd input is chaotic:
+- Fragmented feedback
+- No real-time aggregation
+- Poor decision visibility
+- Lack of prioritization
+ 
+## 💡 Solution
 
-The CrowdSync Attendee App acts as your personal stadium concierge, providing real-time wayfinding, smart concession ordering, and localized notifications. 
+CrowdSync leverages AI to:
+- Collect crowd inputs in real time
+- Cluster similar ideas using semantic understanding
+- Rank insights based on relevance & engagement
+- Provide a unified decision dashboard
 
-**Ready to upgrade your event experience?**
-* [📥 Download for iOS on the App Store](#)
-* [📥 Download for Android on Google Play](#)
+⚙️ Features
 
-*(Note: The app requires you to scan your ticket barcode to unlock event-specific routing and ordering features.)*
+### 🔹 Real-Time Input Aggregation
+Capture inputs from multiple users simultaneously.
 
-## 🧠 AI Intelligence (Vertex AI Gemini)
+### 🔹 AI-Powered Clustering
+Group similar ideas using embeddings / LLM reasoning.
 
-The `ai_coordinator` uses Google Cloud Vertex AI (Gemini 1.5 Flash) to provide real-time assistance.
+### 🔹 Smart Ranking Engine
+Prioritize ideas based on:
+- Frequency
+- Sentiment
+- Engagement
 
-### How it works
-- **Contextual Awareness**: Gemini is primed with "Stadium Coordinator" instructions.
-- **Latency Optimized**: Uses Gemini 1.5 Flash for sub-second responses.
-- **Resiliency**: Built-in fallback system ensures the app remains functional if the API is unreachable.
+### 🔹 Live Dashboard
+Visualize:
+- Top ideas
+- Trends
+- Crowd sentiment
 
-### How to Run Locally
-1. **Authenticate**: `gcloud auth application-default login`
-2. **Launch**:
-   ```bash
-   cd ai_coordinator
-   pip install -r requirements.txt
-   python main.py
-   ```
+### 🔹 Scalable Architecture
+Designed to handle concurrent users in event-scale environments.
+
+---
+
+## 🏗️ Tech Stack
+
+**Frontend**
+- React / Next.js
+- Tailwind CSS
+
+**Backend**
+- Node.js / FastAPI
+
+**AI Layer**
+- OpenAI / Gemini APIs
+- Vector DB (Pinecone / FAISS)
+
+**Infra**
+- Docker
+- Cloud Run / Firebase / GCP
+
+---
+
+## 🧩 System Architecture
